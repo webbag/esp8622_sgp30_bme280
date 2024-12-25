@@ -1,0 +1,84 @@
+- name: Setup Grafana and InfluxDB
+  hosts: localhost
+  tasks:
+    - name: Ensure dependencies are installed
+      become: yes
+      apt:
+        name:
+          - apt-transport-https
+          - software-properties-common
+          - podman
+          - podman-docker
+        state: present
+        update_cache: yes
+
+    - name: Pull InfluxDB image
+      command: podman pull docker.io/influxdb:latest
+      retries: 3
+      delay: 10
+
+    - name: Run InfluxDB container
+      containers.podman.podman_container:
+        name: influxdb
+        image: docker.io/influxdb:latest
+        state: started
+        ports:
+          - "8086:8086"
+        volumes:
+          - "../influxdb/data:/var/lib/influxdb2"
+          - "../influxdb/config:/etc/influxdb2"
+        restart_policy: always
+
+    - name: Pull Grafana image
+      command: podman pull docker.io/grafana/grafana-oss:latest
+      retries: 3
+      delay: 10
+
+    - name: Run Grafana container
+      containers.podman.podman_container:
+        name: grafana
+        image: docker.io/grafana/grafana-oss:latest
+        state: started
+        ports:
+          - "3000:3000"
+        volumes:
+          - "../grafana/data:/var/lib/grafana"
+        restart_policy: always
+
+    - name: Check if InfluxDB is running
+      uri:
+        url: "http://localhost:8086/health"
+        method: GET
+        status_code: 200
+      register: influxdb_status
+      retries: 5
+      delay: 10
+      until: influxdb_status.status == 200
+
+    - name: Configure InfluxDB (initial setup)
+      command: >
+        curl -X POST http://localhost:8086/api/v2/setup
+        -H "Content-Type: application/json"
+        -d '{"username": "admin", "password": "adminadmin", "org": "webbag", "bucket": "esp8622mod", "user": "admin", "password": "adminadmin", "retentionPeriodHrs": 0}'
+      register: setup_result
+      changed_when: "'already set up' not in setup_result.stdout and setup_result.rc == 0"
+
+    - name: Debug curl response
+      debug:
+        var: setup_result
+
+    - name: Check if Grafana is running
+      uri:
+        url: "http://localhost:3000/api/health"
+        method: GET
+        status_code: 200
+      register: grafana_status
+      retries: 5
+      delay: 10
+      until: grafana_status.status == 200
+
+    - name: Display setup complete message
+      debug:
+        msg: >
+          Grafana is running on http://localhost:3000 (default user: admin, password: admin).
+          InfluxDB is running on http://localhost:8086. Configure it via the web interface.
