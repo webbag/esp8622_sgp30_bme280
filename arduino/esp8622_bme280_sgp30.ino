@@ -5,9 +5,9 @@
 #include <Adafruit_BME280.h>
 #include <Adafruit_SGP30.h>
 
-const char* ssid = "Io"; 
-const char* password = "PluNepUra";
-const char* serverIP = "192.168.1.29"; 
+const char* ssid = getenv("SSID");         // Pobranie SSID z zmiennych środowiskowych
+const char* password = getenv("PASSWORD"); // Pobranie hasła z zmiennych środowiskowych
+const char* serverIP = getenv("SERVER_IP");  // Pobranie IP serwera z zmiennych środowiskowych
 const int serverPort = 8080;
 
 WiFiClient client; 
