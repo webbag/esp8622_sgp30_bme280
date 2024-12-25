@@ -8,6 +8,45 @@ Projekt przedstawia system monitorowania środowiska, który wykorzystuje moduł
 
 System monitorowania środowiska pozwala na zbieranie danych z czujników temperatury, ciśnienia, wilgotności oraz jakości powietrza (TVOC, eCO2). Dane są przesyłane z ESP8266 do serwera, gdzie są zapisywane w bazie danych InfluxDB i wizualizowane w Grafanie.
 
+
+---
+
+##
+                            +-------------------------+
+                            |        ESP8266          |
+                            |                         |
+                            |   +-----------------+   |
+                            |   |   VCC           |---|----> 3.3V
+                            |   |   GND           |---|----> GND
+                            |   |   SDA           |---|----> SDA (I2C)
+                            |   |   SCL           |---|----> SCL (I2C)
+                            |   +-----------------+   |
+                            +-------------------------+
+                                    |        |
+                             +------|--------|------+
+                             |      |        |      |
+                   +----------------+    +----------------+
+                   |    SGP30        |    |    BME280      |
+                   |   +--------+    |    |   +--------+   |
+                   |   | VCC    |----|----|---| VCC    |---|
+                   |   | GND    |----|----|---| GND    |---|
+                   |   | SDA    |----|----|---| SDA    |---|
+                   |   | SCL    |----|----|---| SCL    |---|
+                   |   +--------+    |    |   +--------+   |
+                   +----------------+    +----------------+
+Opis:
+ - ESP8266: Mikrokontroler, który będzie pełnił rolę mastera I2C.
+ - SGP30 i BME280: Dwa czujniki, które są podłączone równolegle do ESP8266.
+ - VCC: Zasilanie 3.3V dla obu czujników.
+ - GND: Masa, wspólna dla wszystkich komponentów.
+ - SDA i SCL: Linie I2C do komunikacji z mikrokontrolerem. Są one połączone równolegle do obu czujników.
+
+Uwagi:
+ - Warto upewnić się, że oba czujniki mają różne adresy I2C. Domyślnie SGP30 ma adres 0x58, a BME280 0x76 lub 0x77 (zależnie od wersji).
+ - Jeśli używasz ESP8266, linie SDA i SCL są domyślnie podłączone do pinów D2 (SDA) i D1 (SCL). Możesz je zmienić, jeśli tego wymaga Twoje oprogramowanie.
+ - Taki schemat pozwala na jednoczesne podłączenie obu czujników do jednego mikrokontrolera za pomocą jednej magistrali I2C.
+
+
 ---
 
 ## Sekcja ESP 8622
