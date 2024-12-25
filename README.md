@@ -49,7 +49,7 @@ Uwagi:
 
 ---
 
-## Sekcja ESP 8622
+##  ESP 8622
 
 Kod Arduino obsługuje:
 - Łączenie z Wi-Fi.
@@ -64,7 +64,7 @@ Przykładowe elementy kodu:
 
 ---
 
-## Sekcja Ansible
+##  Ansible
 
 Playbook automatyzuje konfigurację środowiska, w tym:
 - Instalację zależności (np. Podman, Docker).
@@ -76,7 +76,7 @@ Playbook automatyzuje konfigurację środowiska, w tym:
 
 ---
 
-## Sekcja Proxy (Python)
+##  Proxy (Python)
 
 Serwer proxy napisany w Pythonie obsługuje:
 - Przyjmowanie danych z ESP8266 w formacie JSON.
@@ -90,9 +90,8 @@ Funkcjonalność:
 
 ---
 
-## Sekcja Grafana
+##  Grafana
 
-TODO:
 - Konfiguracja dashboardów w Grafanie.
 - Wizualizacja danych, takich jak:
   - Temperatury.
