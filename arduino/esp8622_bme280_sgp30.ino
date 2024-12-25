@@ -5,9 +5,9 @@
 #include <Adafruit_BME280.h>
 #include <Adafruit_SGP30.h>
 
-const char* ssid = getenv("SSID");         // Pobranie SSID z zmiennych środowiskowych
-const char* password = getenv("PASSWORD"); // Pobranie hasła z zmiennych środowiskowych
-const char* serverIP = getenv("SERVER_IP");  // Pobranie IP serwera z zmiennych środowiskowych
+const char* ssid = getenv("SSID");
+const char* password = getenv("PASSWORD");
+const char* serverIP = getenv("SERVER_IP");
 const int serverPort = 8080;
 
 WiFiClient client; 
@@ -79,7 +79,7 @@ void loop() {
       Serial.println(http.errorToString(httpResponseCode));
 
     }
-    http.end(); // Zamknij połączenie
+    http.end();
   
   } else {
   
